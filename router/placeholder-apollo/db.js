@@ -1,7 +1,21 @@
-const api = require('./api');
-const db = require('./storage');
+const path = require('path');
 
-const lastUpdated = db.get('initialized').value();
+const lowdb = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
+const api = require('./api');
+
+const file = new FileSync(path.resolve(__dirname, 'data', 'storage.json'));
+const db = lowdb(file);
+
+db.defaults({
+  albums: [],
+  comments: [],
+  photos: [],
+  posts: [],
+  todos: [],
+  users: [],
+}).write();
 
 const request = (table) =>
   api.get(`/${table}`)
